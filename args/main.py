@@ -1,7 +1,6 @@
 import argparse
 import logging
 
-import constants
 
 def parse_arguments(parser: argparse.ArgumentParser):
     create_arguments(parser)
@@ -9,7 +8,7 @@ def parse_arguments(parser: argparse.ArgumentParser):
 
 
 def create_arguments(parser):
-    parser.add_argument("--log-level", choices=[str(l) for l in logging.getLevelNamesMapping()], default=logging.INFO)
+    parser.add_argument("--log-level", choices=[str(l) for l in logging.getLevelNamesMapping()], type=str.upper, default=logging.INFO)
 
 
 
