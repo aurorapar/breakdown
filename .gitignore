@@ -1,1 +1,4 @@
-/sensitive/secrets.py
+.idea/
+*__pycache__/
+
+/BREAKDOWN.log
