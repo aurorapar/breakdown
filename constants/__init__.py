@@ -6,3 +6,9 @@ CLIENT_ID = "client_id"
 CLIENT_SECRET = "client_secret"
 TOKEN = "token"
 TOKEN_DURATION = "token_duration"
+
+REGION = "us"
+ENDPOINT = "endpoint"
+ITEM_SEARCH = "item_search"
+
+AUTHORIZATION = "Authorization"

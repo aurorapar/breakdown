@@ -1,4 +1,4 @@
-from logging import getLogger
+from log import get_logger
 
 import requests
 
@@ -8,7 +8,7 @@ import sensitive
 
 
 def obtain_oauth_token():
-    log = getLogger(__name__)
+    log = get_logger()
     log.info("Starting OAuth")
 
     if sensitive.secrets[constants.TOKEN_DURATION] > 0:
@@ -27,3 +27,4 @@ def obtain_oauth_token():
 
     data = response.json()
     sensitive.set_token(data['access_token'], int(data['expires_in']))
+    log.info(f"OAuth complete, token cached")
