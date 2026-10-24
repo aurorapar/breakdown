@@ -12,3 +12,5 @@ ENDPOINT = "endpoint"
 ITEM_SEARCH = "item_search"
 
 AUTHORIZATION = "Authorization"
+
+DISENCHANTABLE_CRAFT_ITEM_CACHE = "disenchantable_crafts.json"

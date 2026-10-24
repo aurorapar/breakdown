@@ -16,8 +16,8 @@ class QueryDeCrafts(Query):
     def perform_request(self):
         req = super().perform_request
         params = {
-            "quality": ["UNCOMMON", "RARE", "EPIC"],
-            "item_subclass.name.en_US": ["TAILORING", "BLACKSMITHING", "LEATHERWORKING", "ENCHANTING"]
+            "quality": ["Uncommon", "Rare", "Epic"],
+            "item_subclass.name.en_US": ["Tailoring", "Blacksmithing", "Leatherworking", "Enchanting"]
         }
 
         data = []
@@ -25,12 +25,11 @@ class QueryDeCrafts(Query):
         for q in params["quality"]:
             for p in params["item_subclass.name.en_US"]:
                 req_params = {
-                    # "quality": q,
-                    # "item_subclass.name.en_US": p,
-                    "item_class.name.en_US": 'CLOTH'
+                    "quality.name.en_US": q,
+                    "item_subclass.name.en_US": p,
                 }
+
                 resp = req(**req_params)
-                data.append(resp)
-                break
-            break
+                data += resp
+
         return data

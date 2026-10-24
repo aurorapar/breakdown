@@ -11,10 +11,6 @@ def obtain_oauth_token():
     log = get_logger()
     log.info("Starting OAuth")
 
-    if sensitive.secrets[constants.TOKEN_DURATION] > 0:
-        log.info(f"Returning cached token (duration {sensitive.secrets[constants.TOKEN_DURATION]} seconds)")
-        return
-
     data = {
         'grant_type': 'client_credentials',
     }
@@ -26,5 +22,9 @@ def obtain_oauth_token():
         raise RuntimeError(e)
 
     data = response.json()
-    sensitive.set_token(data['access_token'], int(data['expires_in']))
-    log.info(f"OAuth complete, token cached")
+    log.info(data)
+
+    if int(sensitive.secrets[constants.TOKEN_DURATION]) != int(data['expires_in']) or data['access_token'] != sensitive.secrets[constants.TOKEN]:
+        log.info("OAuth token updated")
+        sensitive.set_token(data['access_token'], int(data['expires_in']))
+

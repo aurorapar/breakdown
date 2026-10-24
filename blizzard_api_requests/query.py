@@ -5,6 +5,7 @@ import requests
 import constants
 import log
 import sensitive
+from oauth import obtain_oauth_token
 
 logger = log.get_logger()
 
@@ -26,7 +27,6 @@ class Query(ABC):
     REQUIRED_ATTRIBUTES = [constants.ENDPOINT]
 
     def __init__(self, endpoint):
-
         self.endpoint = endpoint
 
     def __setattr__(self, k, v):
@@ -51,6 +51,7 @@ class Query(ABC):
                 return v
 
     def perform_request(self, **kwargs):
+        obtain_oauth_token()
         params = kwargs
 
         domain = REQUEST_DOMAIN + self.endpoint + "namespace=" + REQUEST_NAMESPACE
@@ -58,6 +59,23 @@ class Query(ABC):
         headers = REQUEST_HEADER.copy()
         headers[constants.AUTHORIZATION].format(sensitive.secrets[constants.TOKEN])
 
+        results = []
+        data = self.__do_query(domain, headers, params)
+        results += data['results']
+
+        page_count = int(data['pageCount'])
+        if page_count != 1:
+            for x in range(2, page_count):
+                params['pageCount'] = x
+                new_data = self.__do_query(domain, headers, params)
+                results += new_data['results']
+
+                if x == 10 and int(new_data['pageResults']) > int(new_data['maxPageSize']):
+                    raise RuntimeWarning("Maximum page size exceeded in response")
+
+        return results
+
+    def __do_query(self, domain, headers, params):
         response = requests.get(domain, headers=headers, params=params)
         if response.status_code != requests.codes.ok:
             raise RuntimeError(f"Query failed: {response.status_code} {response.reason}\n\t{response.url}")
@@ -65,5 +83,6 @@ class Query(ABC):
         logger.info(response.request.url)
         logger.info(response.request.body)
         logger.info(response.request.headers)
-        logger.info(response.json())
-        return response.json()
+
+        data = response.json()
+        return data
