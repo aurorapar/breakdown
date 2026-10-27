@@ -1,8 +1,8 @@
-import log
+import time
 
 import constants
 from blizzard_api_requests import Query
-from blizzard_api_requests.query import VALID_ENDPOINTS
+import log
 
 logger = log.get_logger()
 
@@ -10,26 +10,17 @@ logger = log.get_logger()
 class QueryDeCrafts(Query):
 
     def __init__(self):
-        logger.info(f"Endpoint: {VALID_ENDPOINTS[constants.ITEM_SEARCH]}")
-        super().__init__(endpoint=VALID_ENDPOINTS[constants.ITEM_SEARCH])
+        logger.info(f"Endpoint: {constants.VALID_ENDPOINTS[constants.ITEM_SEARCH]}")
+        super().__init__(endpoint=constants.VALID_ENDPOINTS[constants.ITEM_SEARCH], namespace=constants.Namespace.STATIC.value)
 
-    def perform_request(self):
+    def execute(self, quality, subclass):
         req = super().perform_request
         params = {
-            "quality": ["Uncommon", "Rare", "Epic"],
-            "item_subclass.name.en_US": ["Tailoring", "Blacksmithing", "Leatherworking", "Enchanting"]
+            f"{constants.QUALITY}.{constants.NAME}.{constants.LANG}": quality,
+            f"{constants.ITEM_SUBCLASS}.{constants.NAME}.{constants.LANG}": subclass
         }
 
-        data = []
+        response = req(**params)
+        response[constants.LAST_UPDATED] = time.time()
 
-        for q in params["quality"]:
-            for p in params["item_subclass.name.en_US"]:
-                req_params = {
-                    "quality.name.en_US": q,
-                    "item_subclass.name.en_US": p,
-                }
-
-                resp = req(**req_params)
-                data += resp
-
-        return data
+        return response

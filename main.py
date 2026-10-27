@@ -27,7 +27,7 @@ def handle_log_level(args):
 
     run_sequence = uuid.uuid4().hex
     log_format = f"{run_sequence } %(asctime)s %(message)s"
-    log = logging.getLogger(__name__)
+    
     logging.basicConfig(
         format=log_format,
         level=args.log_level,
