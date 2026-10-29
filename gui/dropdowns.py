@@ -17,7 +17,7 @@ class DropDown:
         self.setting_labels = setting_labels
         self.setting_enum = setting_enum
 
-        label = tk.Label(master, text=self.setting_name)
+        label = tk.Label(master, text=self.setting_name,font=("Arial", 14))
         label.configure(bg=getattr(user_settings, constants.BACKGROUND_COLOR), fg=getattr(user_settings, constants.TEXT_COLOR))
 
 
@@ -31,12 +31,12 @@ class DropDown:
                 current_selection = [e.value for e in self.setting_enum if e.value == current_selection][0]
                 default_selection.set(current_selection or setting_options[0])
         else:
-            current_selection = setting_options[0]
             default_selection.set(setting_options[0])
+        self.dropdown_callback(default_selection.get())
 
         setting_dropdown = tk.OptionMenu(master, default_selection, *setting_options, command=self.dropdown_callback)
-        setting_dropdown.configure(bg=getattr(user_settings, constants.BACKGROUND_COLOR), fg=getattr(user_settings, constants.TEXT_COLOR))
-
+        setting_dropdown.configure(bg=getattr(user_settings, constants.BACKGROUND_COLOR),
+                                   fg=getattr(user_settings, constants.TEXT_COLOR), font=("Arial", 12))
         master.add_column_item(label)
         master.add_column_item(setting_dropdown)
 
@@ -48,3 +48,4 @@ class DropDown:
 
         user_settings = settings.Settings()
         setattr(user_settings, self.setting_name, new_setting)
+

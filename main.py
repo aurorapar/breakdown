@@ -6,7 +6,7 @@ import uuid
 
 from args import parse_arguments
 import constants
-from workflow import workflow
+import gui
 
 parser = argparse.ArgumentParser()
 logger = logging.getLogger(__name__)
@@ -16,10 +16,12 @@ def main():
     handle_log_level(args)
 
     try:
-        workflow()
+        gui.start_gui()
     except Exception as e:
         logger.error(traceback.format_exception(e))
         traceback.print_exc()
+    finally:
+        exit()
 
 def handle_log_level(args):
     if not args or not args.log_level:

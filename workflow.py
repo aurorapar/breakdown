@@ -5,14 +5,13 @@ import gui
 from blizzard_api_requests import QueryDeCrafts, QueryAuction
 import constants
 import log
+import settings
 from wowhead_requests import QueryItemWowhead
 
+user_settings = settings.Settings()
 logger = log.get_logger()
 
 def workflow():
-    main_window = gui.root
-    main_window.mainloop()
-    exit()
 
     disenchantable_items = get_disenchantable_items()    
 
@@ -28,15 +27,19 @@ def workflow():
 
 
 def get_disenchantable_items():
-    deable_items = []
+    deable_items = {
+        "data": []
+    }
     disenchantable_items_query = QueryDeCrafts()
     for quality in constants.QUALITIES:
         for subclass in constants.ITEM_SUBCLASSES:
-            deable_items += disenchantable_items_query.execute(quality, subclass)
+            deable_items['data'] += disenchantable_items_query.execute(quality, subclass)
             break
         break
-    #with open(constants.DISENCHANTABLE_CRAFT_ITEM_CACHE, "w") as f:
-    #    json.dump(deable_items, f)
+    deable_items[constants.LAST_UPDATED] = time.time()
+    deable_items[constants.NAME] = constants.BLIZZARD_ITEM_DATA
+    with open(constants.DISENCHANTABLE_CRAFT_ITEM_CACHE, "w") as f:
+        json.dump(deable_items, f)
 
     #with open(constants.DISENCHANTABLE_CRAFT_ITEM_CACHE, "r") as f:
     #    deable_items = json.load(f)
@@ -71,7 +74,8 @@ def get_wowhead_data(item_data):
                         f"{item_id} - {item_data[constants.DATA][constants.NAME]}")
                 else:
                     cache[item_id] = r[constants.WOWHEAD][constants.ITEM]
-
+                    cache[constants.LAST_UPDATED] = time.time()
+                    cache[constants.NAME] = constants.WOWHEAD_DATA
                     with open(constants.WOWHEAD_ITEM_CACHE, "w") as f:
                         json.dump(cache, f)
 

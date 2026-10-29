@@ -6,6 +6,7 @@ NAME = "name"
 DATA = "data"
 ID = "id"
 ITEM = "item"
+ITEMS = "Item(s)"
 ERROR = "error"
 QUANTITY = "quantity"
 COUNT = "count"
@@ -13,10 +14,20 @@ SPELL = "spell"
 REAGENT = "reagent"
 LANGUAGE = "Language"
 GUI_GEOMETRY = "geometry"
-LAST_UPDATED = "last_updated"
+LAST_UPDATED = "Last Updated"
+UPDATED_FORMAT = "%Y-%m-%d %H:%M"
+WINDOW_SIZE = "window_size"
+WINDOW_X = "window_x"
+WINDOW_Y = "window_y"
+TIME = "time"
+UPDATE = "Update"
+UPDATING = "Updating..."
+CREATED_BY = "createdBy"
 
 BACKGROUND_COLOR = "background_color"
 TEXT_COLOR = "text_color"
+DEFAULT_FONT = "Arial"
+DEFAULT_FONT_SIZE = 10
 
 __SECRETS_FILE = "secrets.json"
 CLIENT_ID = "client_id"
@@ -71,8 +82,12 @@ AUTHORIZATION = "Authorization"
 
 DISENCHANTABLE_CRAFT_ITEM_CACHE = "disenchantable_crafts.json"
 WOWHEAD_ITEM_CACHE = "wowhead.json"
-CRAFTABLE_ITEM_CACHE = "craftables.json"
+BLIZZARD_AUCTION_CACHE = "auctions.json"
 SETTINGS_CACHE = "settings.json"
+BLIZZARD_ITEM_DATA = "Item Data"
+WOWHEAD_DATA = "Craft Data"
+BLIZZARD_AUCTION_DATA = "Auction Data"
+
 
 VALID_ENDPOINTS = {
     ITEM_SEARCH: "search/item?",

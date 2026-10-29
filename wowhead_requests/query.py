@@ -50,7 +50,8 @@ class QueryWowhead(ABC):
 
     def __do_query(self, domain, endpoint):
         headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0"
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:146.0) Gecko/20100101 Firefox/146.0",
+            "Accept": "text / html, application / xhtml + xml, application / xml;q = 0.9, * / *;q = 0.8"
         }
         response = requests.get(domain + endpoint, headers=headers)
 
@@ -63,6 +64,9 @@ class QueryWowhead(ABC):
 
         data = response.text.strip()
         data = xmltodict.parse(xml_input=data)
-
-        return data
+        try:
+            _ = data[constants.WOWHEAD][constants.ITEM][constants.CREATED_BY]
+            return data
+        except KeyError as e:
+            return None
 

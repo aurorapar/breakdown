@@ -8,12 +8,10 @@ from oauth import obtain_oauth_token
 import sensitive
 import settings
 
-user_settings = settings.Settings()
-
 logger = log.get_logger()
 
-REQUEST_DOMAIN = f"https://{getattr(user_settings, constants.REGION)}.api.blizzard.com/data/wow/"
-REQUEST_NAMESPACE = f"{{0}}-{getattr(user_settings, constants.GAME_VERSION)}{constants.DEFAULT_REGION}"
+REQUEST_DOMAIN = "https://{0}.api.blizzard.com/data/wow/"
+REQUEST_NAMESPACE = "{0}-{1}" + constants.DEFAULT_REGION
 REQUEST_HEADER = {
     "Battlenet-Namespace": REQUEST_NAMESPACE,
     constants.AUTHORIZATION: "Bearer {0}".format(sensitive.secrets[constants.TOKEN])
@@ -53,11 +51,17 @@ class Query(ABC):
         obtain_oauth_token()
         params = kwargs
 
-        domain = REQUEST_DOMAIN + self.endpoint + "namespace=" + REQUEST_NAMESPACE.format(self.namespace)
+        user_settings = settings.Settings()
+        game_version = getattr(user_settings, constants.GAME_VERSION)
+
+
+        domain = (REQUEST_DOMAIN.format(getattr(user_settings, constants.REGION)) +
+                  self.endpoint +
+                  "namespace=" + REQUEST_NAMESPACE.format(self.namespace,game_version))
 
         headers = REQUEST_HEADER.copy()
         headers[constants.AUTHORIZATION].format(sensitive.secrets[constants.TOKEN])
-        headers["Battlenet-Namespace"].format(self.namespace)
+        # headers["Battlenet-Namespace"].format(self.namespace, )
 
         results = []
         data = self.__do_query(domain, headers, params)
@@ -76,13 +80,15 @@ class Query(ABC):
         return results
 
     def __do_query(self, domain, headers, params):
+        logger.info(domain)
+        logger.info(headers)
+        logger.info(params)
         response = requests.get(domain, headers=headers, params=params)
         if response.status_code != requests.codes.ok:
             raise RuntimeError(f"Query failed: {response.status_code} {response.reason}\n\t{response.url}")
 
         logger.info(response.request.url)
         logger.info(response.request.body)
-        logger.info(response.request.headers)
 
         data = response.json()
         return data

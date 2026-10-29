@@ -21,6 +21,5 @@ class QueryDeCrafts(Query):
         }
 
         response = req(**params)
-        response[constants.LAST_UPDATED] = time.time()
 
         return response

@@ -11,6 +11,10 @@ DEFAULT = {
 
             constants.BACKGROUND_COLOR: "#303030",
             constants.TEXT_COLOR: "#FFFFFF",
+            constants.WINDOW_SIZE: "300x200",
+            constants.WINDOW_X: "300",
+            constants.WINDOW_Y: "300",
+
         }
 
 class Settings:
